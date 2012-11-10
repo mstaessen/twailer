@@ -64,7 +64,7 @@ StreamListener.prototype.unsubscribe = function(email, channel) {
     
 StreamListener.prototype.resetStream = function() {
     if(this.hasSubscriptions()) {
-        this.stream = twitter.stream('/statuses/filter', {track: Object.keys(this.subscriptions)});
+        this.stream = twitter.stream('statuses/filter', {track: Object.keys(this.subscriptions)});
         
         // capture this in self to prevent a scoping problem with the anonymous function
         var self = this;
