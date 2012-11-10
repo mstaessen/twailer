@@ -18,7 +18,7 @@ var StreamListener = function() {
     Events.EventEmitter.call(this);
     
     this.subscriptions = {};
-    this.resetStream();
+    this.stream = null;
 }
 
 Util.inherits(StreamListener, Events.EventEmitter);
@@ -76,7 +76,10 @@ StreamListener.prototype.resetStream = function() {
         this.stream.on('tweet', function(tweet) {
             this.onTweet(tweet);
         });
-        oldStream.stop();
+        
+        if(oldStream) {
+            oldStream.stop();
+        }
     }
 };
     
