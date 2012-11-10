@@ -18,7 +18,7 @@ var StreamListener = function() {
     Events.EventEmitter.call(this);
     
     this.subscriptions = {};
-    resetStream();
+    this.resetStream();
 }
 
 Util.inherits(StreamListener, Events.EventEmitter);
@@ -94,6 +94,10 @@ StreamListener.prototype.onUnsubscribe = function(email, channel) {
 
 StreamListener.prototype.onTweet = function(tweet) {
     console.log(tweet.text);
+};
+
+StreamListener.prototype.hasSubscriptions = function() {
+    return this.subscriptions.keys().length != 0;
 };
     
 StreamListener.prototype.isValidEmail = function(email) {
