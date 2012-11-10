@@ -106,7 +106,7 @@ StreamListener.prototype.onUnsubscribe = function(email, channel) {
 };
 
 StreamListener.prototype.onTweet = function(tweet) {
-    console.log(tweet.text);
+    console.log("Incoming tweet: " + tweet.text);
     this.emit('tweet', tweet);
 };
 

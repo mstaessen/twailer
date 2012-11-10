@@ -33,8 +33,6 @@ streamListener.on('unsubscribe', function(email, channel) {
 });
 
 streamListener.on('tweet', function(tweet) {
-    console.log("Received: " + tweet.text);
-    
     var hashtags = tweet.entities.hashtags;
     var user_mentions = tweet.entities.user_mentions;
     var subscribers = {};
@@ -50,7 +48,6 @@ streamListener.on('tweet', function(tweet) {
                 var email = emails[j];
                 if(!subscribers[email]) {
                     subscribers[email] = [];
-                    console.log("Added " + email + " for " + tag);
                 }
                 subscribers[email].push("[" + tag + "]");
             }
@@ -68,14 +65,11 @@ streamListener.on('tweet', function(tweet) {
                 var email = emails[j];
                 if(!subscribers[email]) {
                     subscribers[email] = [];
-                    console.log("Added " + email + " for " + user);
                 }
                 subscribers[email].push("[" + user + "]");
             }
         }
     }
-    
-    console.log(Util.inspect(subscribers));
     
     for(var subscriber in subscribers) {
         mailTransport.sendMail({
