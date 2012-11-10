@@ -3,7 +3,7 @@ var Redis          = require('redis')
   , StreamListener = require('./stream-listener');
   
 var streamListener = new StreamListener();
-var mailTransport  = NodeMailer.createTransport("Sendmail");
+var mailTransport  = NodeMailer.createTransport("SMTP");
 var client         = Redis.createClient();
 
 // TODO: streamListener.on('subscribe', writeConfig(streamListener.subscriptions));
@@ -21,6 +21,14 @@ streamListener.on('subscribe', function(email, channel) {
 });
 
 streamListener.on('unsubscribe', function(email, channel) {
+    // TODO: elaborate
+    mailTransport.sendMail({
+        from:                 "twailer@twailer.mstaessen.be",
+        to:                   email,
+        subject:              "[" + channel + "] Subscription removal confirmation",
+        generateTextFromHTML: true,
+        html:                 "<p>You successfully unsubscribed from the channel '" + channel + "'</p>"
+    });
     
 });
 

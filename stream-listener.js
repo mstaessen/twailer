@@ -19,6 +19,7 @@ var StreamListener = function() {
     
     this.subscriptions = {};
     this.stream = null;
+    this.nbChannels = 0;
 }
 
 Util.inherits(StreamListener, Events.EventEmitter);
@@ -84,16 +85,18 @@ StreamListener.prototype.resetStream = function() {
 };
     
 StreamListener.prototype.onSubscribe = function(email, channel) {
-    // The number of keywords in track does not match the number of keywords in subscriptions, reset
-    if(!this.stream || this.subscriptions.keys().length != this.stream.oauth.params.track.length) {
+    // The number of channels has changed, reset the stream...
+    if(!this.stream || this.subscriptions.keys().length != this.nbChannels) {
         this.resetStream();
+        this.nbChannels = this.subscriptions.keys().length;
     }
 };
     
 StreamListener.prototype.onUnsubscribe = function(email, channel) {
-    // The number of keywords in track does not match the number of keywords in subscriptions, reset
-    if(this.subscriptions.keys().length != this.stream.oauth.params.track.length) {
+    // The number of channels has changed, reset the stream...
+    if(this.subscriptions.keys().length != this.nbChannels) {
         this.resetStream();
+        this.nbChannels = this.subscriptions.keys().length;
     }
 };
 
