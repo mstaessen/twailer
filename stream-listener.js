@@ -18,7 +18,7 @@ var StreamListener = function() {
     Events.EventEmitter.call(this);
     
     this.subscriptions = {};
-    this.stream = null;
+    resetStream();
 }
 
 Util.inherits(StreamListener, Events.EventEmitter);
