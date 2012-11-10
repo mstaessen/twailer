@@ -1,6 +1,6 @@
 var Twitter   = require('twit')
   , config    = require('./config')
-  , events    = require('events')
+  , Events    = require('events')
   , Util      = require('util')
   , Validator = require('validator');
 
@@ -15,13 +15,11 @@ Object.prototype.keys = function() {
 var twitter = new Twitter(config);   
    
 var StreamListener = function() {
-    events.EventEmitter.call(this);
+    Events.EventEmitter.call(this);
     
     this.subscriptions = {};
     this.stream = null;
 }
-
-Util.inherits(StreamListener, events.EventEmitter);
 
 StreamListener.prototype = {
     constructor: StreamListener,
@@ -99,5 +97,7 @@ StreamListener.prototype = {
             || Validator.check(channel).len(2, 60).regex(/#[A-Za-z0-9_]/);
     }
 }
+
+Util.inherits(StreamListener, Events.EventEmitter);
 
 exports = module.exports = StreamListener;
