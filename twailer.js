@@ -1,16 +1,10 @@
-var Express        = require('express')
-//  , FS             = require('fs')
-  , Http           = require('http')
+var Redis          = require('redis')
   , NodeMailer     = require('nodemailer')
   , StreamListener = require('./stream-listener');
   
-var app            = new Express();
 var streamListener = new StreamListener();
 var mailTransport  = NodeMailer.createTransport("Sendmail");
-
-//var writeConfig = function(channels) {
-//    
-//};
+var client         = Redis.createClient();
 
 // TODO: streamListener.on('subscribe', writeConfig(streamListener.subscriptions));
 // TODO: streamListener.on('unsubscribe', writeConfig(streamListener.subscriptions));
@@ -30,11 +24,26 @@ streamListener.on('unsubscribe', function(email, channel) {
     
 });
 
-app.get('/subscribe/:email/:channel', function(req, res) {
-    streamListener.subscribe(email, channel);
-});
-app.get('/subscribe/:email/:channel', function(req, res) {
-    streamListener.unsubscribe(email, channel);  
+client.on('connect', function() {
+    console.log("Successfully connected to redis server!");
 });
 
-Http.createServer(app).listen(3000, '127.0.0.1');
+client.on('subscribe', function(channel, count) {
+    console.log("Successfully subscribed to " + channel);
+});
+
+client.on('message', function(channel, message) {
+    var msg = JSON.parse(message)
+    switch(channel) {
+        case 'twailer.subscribe':
+            console.log("Received 'subscribe to " + msg.channel + " message' from " + msg.email);
+            streamListener.subscribe(msg.email, msg.channel);
+            break;
+        case 'twailer.unsubscribe':
+            console.log("Received 'ubsubscribe from " + msg.channel + " message' from " + msg.email);
+            streamListener.unsubscribe(msg.email, msg.channel);            
+            break;
+    }
+});
+client.subscribe('twailer.subscribe');
+client.subscribe('twailer.unsubscribe');

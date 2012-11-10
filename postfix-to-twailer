@@ -1,6 +1,5 @@
 #!/bin/sh
 
 TWAILER_HOME=$(dirname $0)
-cd "$TWAILER_HOME"
 
-/usr/local/bin/node /home/twailer/mail.js < /dev/stdin
+/usr/local/bin/node "$TWAILER_HOME"/mail.js < /dev/stdin
