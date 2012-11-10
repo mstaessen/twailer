@@ -39,30 +39,41 @@ streamListener.on('tweet', function(tweet) {
     var user_mentions = tweet.entities.user_mentions;
     var subscribers = {};
     
-    // Find out which users follow some of the hashtags in this post
+    // Iterate over all the hashtags in the tweet
     for(var i = 0; i < hashtags.length; i++) {
-        if(streamListener.subscriptions[hashtags[i]]) {
-            for(var j = 0; j < streamListener.subscriptions[hashtags[i]].length; j++) {
-                if(!subscribers[streamListener.subscriptions[hashtags[i]][j]]) {
-                    subscribers[streamListener.subscriptions[hashtags[i]][j]] = [];
-                    console.log("Added " + subscribers[streamListener.subscriptions[hashtags[i]][j]] + " for " + hashtags[i]);
+        // The Twitter API strips the hash
+        var tag = '#' + hashtags[i].text;
+        // We're tracking this hashtag
+        if(streamListener.subscriptions[tag]) {
+            var emails = streamListener.subscriptions[tag];
+            for(var j = 0; j < emails.length; j++) {
+                var email = emails[j];
+                if(!subscribers[email]) {
+                    subscribers[email] = [];
+                    console.log("Added " + email + " for " + tag);
                 }
-                subscribers[streamListener.subscriptions[hashtags[i]][j]].push("[" + hashtags[i] + "]");
+                subscribers[email].push("[" + tag + "]");
             }
         }
     }
     
-    // Find out which users follow some of the user_mentions in this post
+    // Iterate over all the user_mentions in the tweet
     for(var i = 0; i < user_mentions.length; i++) {
-        if(streamListener.subscriptions[user_mentions[i]]) {
-            for(var j = 0; j < streamListener.subscriptions[user_mentions[i]].length; j++) {
-                if(!subscribers[streamListener.subscriptions[user_mentions[i]][j]]) {
-                    subscribers[streamListener.subscriptions[user_mentions[i]][j]] = [];
+        // The Twitter API strips the at-sign
+        var user = '@' + user_mentions[i].screen_name;
+        // We're tracking this user
+        if(streamListener.subscriptions[user]) {
+            var emails = streamListener.subscriptions[user];
+            for(var j = 0; j < emails.length; j++) {
+                var email = emails[j];
+                if(!subscribers[email]) {
+                    subscribers[email] = [];
+                    console.log("Added " + email + " for " + user);
                 }
-                subscribers[streamListener.subscriptions[user_mentions[i]][j]].push("[" + user_mentions[i] + "]");
+                subscribers[email].push("[" + user + "]");
             }
         }
-    } 
+    }
     
     console.log(Util.inspect(subscribers));
     
