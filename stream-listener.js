@@ -1,8 +1,8 @@
-var Twitter   = require('twit')
-  , config    = require('./config')
-  , Events    = require('events')
+var Events    = require('events')
   , Util      = require('util')
-  , Validator = require('validator');
+  , Twitter   = require('twit')
+  , Validator = require('validator')
+  , config    = require('./config');
    
 var twitter = new Twitter(config);   
    
@@ -68,6 +68,16 @@ StreamListener.prototype.resetStream = function() {
         this.stream.on('tweet', function(tweet) {
             this.onTweet(tweet);
         });
+        
+        this.stream.on('connect', function(req) {
+            console.log("Trying to connect...");
+            console.log(Util.inspect(req));
+        });
+        
+        this.stream.on('reconnect', function(req, res, interval) {
+            console.log("Trying to reconnect...");
+        });
+        
         // Twitter disconnects the oldest connection if more then one request is made
         this.stream.on('disconnect', function(disconnectMessage) {
             console.log("disconnected: " + disconnectMessage);
