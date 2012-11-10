@@ -82,7 +82,7 @@ StreamListener.prototype.resetStream = function() {
     
 StreamListener.prototype.onSubscribe = function(email, channel) {
     // The number of keywords in track does not match the number of keywords in subscriptions, reset
-    if(this.subscriptions.keys().length != this.stream.oauth.params.track.length) {
+    if(!this.stream || this.subscriptions.keys().length != this.stream.oauth.params.track.length) {
         this.resetStream();
     }
 };
