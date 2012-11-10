@@ -19,14 +19,6 @@ var StreamListener = function() {
     
     this.subscriptions = {};
     this.stream = null;
-    
-    // Register listeners
-    this.on('subscribe', function(email, channel) {
-        this.onSubscribe(email, channel);
-    });
-    this.on('unsubscribe', function(email, channel) {
-        this.onUnsubscribe(email, channel);
-    });
 }
 
 Util.inherits(StreamListener, events.EventEmitter);
@@ -43,16 +35,19 @@ StreamListener.prototype = {
             // Subscribe email if it is not already subscribed
             if(this.subscriptions[channel].indexOf(email) == -1) {
                 this.subscriptions[channel].push(email);
+                this.onSubscribe(email, channel);
                 this.emit('subscribe', email, channel);
             }
         } else {
             // TODO: Error handling
+            console.log("error: invalid email or channel");
         }
     },
     unsubscribe: function(email, channel) {
         if(this.isValidEmail(email)) {
             if(channel != undefined && this.isValidChannel(channel) && this.subscriptions[channel]) {
                 this.subscriptions[channel].splice(this.subscriptions[channel].indexOf(email), 1);
+                this.onUnsubscribe(email, channel);
                 this.emit('unsubscribe', email, channel);
                 
                 // Remove the channel if nobody is left
@@ -66,9 +61,11 @@ StreamListener.prototype = {
                 }
             } else {
                 // TODO: Error handling
+                console.log("error: invalid channel");
             }
         } else {
             // TODO: Error handling
+            console.log("error: invalid address");
         }
     },
     resetStream: function() {

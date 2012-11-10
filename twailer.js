@@ -1,11 +1,11 @@
-var StreamListener = require('./stream-listener')
-  , Express        = require('express')
-  , fs             = require('fs')
-  , http           = require('http')
-  , NodeMailer     = require("nodemailer");
+var Express        = require('express')
+//  , FS             = require('fs')
+  , Http           = require('http')
+  , NodeMailer     = require('nodemailer')
+  , StreamListener = require('./stream-listener');
   
 var app            = new Express();
-var streamListener = new StreamListener()
+var streamListener = new StreamListener();
 var mailTransport  = NodeMailer.createTransport("Sendmail");
 
 //var writeConfig = function(channels) {
@@ -37,4 +37,4 @@ app.get('/subscribe/:email/:channel', function(req, res) {
     streamListener.unsubscribe(email, channel);  
 });
 
-http.createServer(app).listen(3000, '127.0.0.1');
+Http.createServer(app).listen(3000, '127.0.0.1');
