@@ -1,0 +1,12 @@
+{
+  "name": "twailer",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+      "nodemailer": "0.x",
+      "mailparser": "0.x",
+      "twit": "1.x",
+      "express": "3.x",
+      "validator": "0.x"
+    }
+}
