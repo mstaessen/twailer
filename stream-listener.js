@@ -3,14 +3,6 @@ var Twitter   = require('twit')
   , Events    = require('events')
   , Util      = require('util')
   , Validator = require('validator');
-
-Object.prototype.keys = function() {
-    var keys = [];
-    for(var key in this) {
-        keys.push(key);
-    }
-    return keys;
-};
    
 var twitter = new Twitter(config);   
    
@@ -72,7 +64,7 @@ StreamListener.prototype.unsubscribe = function(email, channel) {
     
 StreamListener.prototype.resetStream = function() {
     if(this.hasSubscriptions()) {
-        this.stream = twitter.stream('/statuses/filter', {track: this.subscriptions.keys()});
+        this.stream = twitter.stream('/statuses/filter', {track: Object.keys(this.subscriptions)});
         this.stream.on('tweet', function(tweet) {
             this.onTweet(tweet);
         });
@@ -80,23 +72,23 @@ StreamListener.prototype.resetStream = function() {
         this.stream.on('disconnect', function(disconnectMessage) {
             console.log("disconnected: " + disconnectMessage);
         });
-        console.log("Started a new stream tracking " + this.subscriptions.keys().join(', '));
+        console.log("Started a new stream tracking " + Object.keys(this.subscriptions).join(', '));
     }
 };
     
 StreamListener.prototype.onSubscribe = function(email, channel) {
     // The number of channels has changed, reset the stream...
-    if(!this.stream || this.subscriptions.keys().length != this.nbChannels) {
+    if(!this.stream || Object.keys(this.subscriptions).length != this.nbChannels) {
         this.resetStream();
-        this.nbChannels = this.subscriptions.keys().length;
+        this.nbChannels = Object.keys(this.subscriptions).length;
     }
 };
     
 StreamListener.prototype.onUnsubscribe = function(email, channel) {
     // The number of channels has changed, reset the stream...
-    if(this.subscriptions.keys().length != this.nbChannels) {
+    if(Object.keys(this.subscriptions).length != this.nbChannels) {
         this.resetStream();
-        this.nbChannels = this.subscriptions.keys().length;
+        this.nbChannels = Object.keys(this.subscriptions).length;
     }
 };
 
@@ -105,7 +97,7 @@ StreamListener.prototype.onTweet = function(tweet) {
 };
 
 StreamListener.prototype.hasSubscriptions = function() {
-    return this.subscriptions.keys().length != 0;
+    return Object.keys(this.subscriptions).length != 0;
 };
     
 StreamListener.prototype.isValidEmail = function(email) {
