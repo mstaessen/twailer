@@ -72,15 +72,15 @@ StreamListener.prototype.unsubscribe = function(email, channel) {
     
 StreamListener.prototype.resetStream = function() {
     if(this.hasSubscriptions()) {
-        var oldStream = this.stream;
         this.stream = twitter.stream('/statuses/filter', {track: this.subscriptions.keys()});
         this.stream.on('tweet', function(tweet) {
             this.onTweet(tweet);
         });
-        
-        if(oldStream) {
-            oldStream.stop();
-        }
+        // Twitter disconnects the oldest connection if more then one request is made
+        this.stream.on('disconnect', function(disconnectMessage) {
+            console.log("disconnected: " + disconnectMessage);
+        });
+        console.log("Started a new stream tracking " + this.subscriptions.keys().join(', '));
     }
 };
     
