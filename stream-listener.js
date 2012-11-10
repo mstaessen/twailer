@@ -73,7 +73,9 @@ StreamListener.prototype.resetStream = function() {
     if(this.hasSubscriptions()) {
         var oldStream = this.stream;
         this.stream = twitter.stream('/statuses/filter', {track: this.subscriptions.keys()});
-        this.stream.on('tweet', this.onTweet(tweet));
+        this.stream.on('tweet', function(tweet) {
+            this.onTweet(tweet);
+        });
         oldStream.stop();
     }
 };
