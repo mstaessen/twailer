@@ -97,12 +97,28 @@ StreamListener.prototype.onTweet = function(tweet) {
 };
     
 StreamListener.prototype.isValidEmail = function(email) {
-    return Validator.check(email).isEmail();
+    try {
+        Validator.check(email).isEmail();
+        return true;
+    } catch (e) {
+        return false;
+    }
 };
     
 StreamListener.prototype.isValidChannel = function(channel) {
-    return Validator.check(channel).len(2, 16).regex(/@[A-Za-z0-9_]/) 
-        || Validator.check(channel).len(2, 60).regex(/#[A-Za-z0-9_]/);
+    try {
+        // Hashtags start with a hash and can be maximally 60 chars long (API restriction)
+        Validator.check(channel).len(2, 60).regex(/\#[A-Za-z0-9_]/);
+        return true;
+    } catch (e) {
+        try {
+            // Usernames start with @ and can be maximally 16 chars long
+            Validator.check(channel).len(2, 16).regex(/\@[A-Za-z0-9_]/);
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
 };
 
 exports = module.exports = StreamListener;
