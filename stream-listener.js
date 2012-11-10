@@ -107,6 +107,7 @@ StreamListener.prototype.onUnsubscribe = function(email, channel) {
 
 StreamListener.prototype.onTweet = function(tweet) {
     console.log(tweet.text);
+    this.emit('tweet', tweet);
 };
 
 StreamListener.prototype.hasSubscriptions = function() {
