@@ -1,4 +1,5 @@
-var Redis          = require('redis')
+var Util           = require('util')
+  , Redis          = require('redis')
   , NodeMailer     = require('nodemailer')
   , StreamListener = require('./stream-listener');
   
@@ -44,6 +45,7 @@ streamListener.on('tweet', function(tweet) {
             for(var j = 0; j < streamListener.subscriptions[hashtags[i]].length; j++) {
                 if(!subscribers[streamListener.subscriptions[hashtags[i]][j]]) {
                     subscribers[streamListener.subscriptions[hashtags[i]][j]] = [];
+                    console.log("Added " + subscribers[streamListener.subscriptions[hashtags[i]][j]] + " for " + hashtags[i]);
                 }
                 subscribers[streamListener.subscriptions[hashtags[i]][j]].push("[" + hashtags[i] + "]");
             }
@@ -75,8 +77,8 @@ streamListener.on('tweet', function(tweet) {
                                 + '<a href="https://twitter.com/' + tweet.user.screen_name + '/status/' + tweet.id_str + '" data-datetime="' + tweet.created_at + '">' + tweet.created_at + '</a>'
                                 + '</blockquote>'
                                 + '<script src="//platform.twitter.com/widgets.js" charset="utf-8"></script>'
-
         });
+        console.log("Sent mail to " + subscriber);
     }
 });
 
