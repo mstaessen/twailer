@@ -31,7 +31,9 @@ streamListener.on('unsubscribe', function(email, channel) {
     });
 });
 
-streamListener.on('tweet', function() {
+streamListener.on('tweet', function(tweet) {
+    console.log("Received: " + tweet.text);
+    
     var hashtags = tweet.entities.hashtags;
     var user_mentions = tweet.entities.user_mentions;
     var subscribers = {};
@@ -59,6 +61,8 @@ streamListener.on('tweet', function() {
             }
         }
     } 
+    
+    console.log(Util.inspect(subscribers));
     
     for(var subscriber in subscribers) {
         mailTransport.sendMail({
