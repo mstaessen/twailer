@@ -16,8 +16,13 @@ var mailTransport  = NodeMailer.createTransport("SMTP");
   
 var streamListener = new StreamListener(Subscriptions.restore());
 
-streamListener.on('subscribe', Subscriptions.backup(streamListener.subscriptions));
-streamListener.on('unsubscribe', Subscriptions.backup(streamListener.subscriptions));
+streamListener.on('subscribe', function(email, channel) {
+    Subscriptions.backup(streamListener.subscriptions);
+});
+
+streamListener.on('unsubscribe', function(email, channel) {
+    Subscriptions.backup(streamListener.subscriptions);
+});
 
 streamListener.on('subscribe', function(email, channel) {
     // TODO: elaborate, use rendering engine
