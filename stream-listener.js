@@ -6,10 +6,10 @@ var Events    = require('events')
    
 var twitter = new Twitter(config);   
    
-var StreamListener = function() {
+var StreamListener = function(subscriptions) {
     Events.EventEmitter.call(this);
     
-    this.subscriptions = {};
+    this.subscriptions = subscriptions || {};
     this.stream = null;
     this.nbChannels = 0;
 }
