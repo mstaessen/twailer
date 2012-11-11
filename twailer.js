@@ -1,17 +1,26 @@
 var Util           = require('util')
   , Redis          = require('redis')
   , NodeMailer     = require('nodemailer')
-  , StreamListener = require('./stream-listener');
+  , StreamListener = require('./stream-listener')
+  , Subscriptions  = require('./subscriptions');
   
-var streamListener = new StreamListener();
+/**************************
+ ****  Mail Transport  ****
+ **************************/
+   
 var mailTransport  = NodeMailer.createTransport("SMTP");
-var client         = Redis.createClient();
 
-// TODO: streamListener.on('subscribe', writeConfig(streamListener.subscriptions));
-// TODO: streamListener.on('unsubscribe', writeConfig(streamListener.subscriptions));
+/**************************
+ ****  StreamListener  ****
+ **************************/
+  
+var streamListener = new StreamListener(Subscriptions.restore());
+
+streamListener.on('subscribe', Subscriptions.backup(streamListener.subscriptions));
+streamListener.on('unsubscribe', Subscriptions.backup(streamListener.subscriptions));
 
 streamListener.on('subscribe', function(email, channel) {
-    // TODO: elaborate
+    // TODO: elaborate, use rendering engine
     mailTransport.sendMail({
         from:                 "twailer@twailer.mstaessen.be",
         to:                   email,
@@ -22,7 +31,7 @@ streamListener.on('subscribe', function(email, channel) {
 });
 
 streamListener.on('unsubscribe', function(email, channel) {
-    // TODO: elaborate
+    // TODO: elaborate, use rendering engine
     mailTransport.sendMail({
         from:                 "twailer@twailer.mstaessen.be",
         to:                   email,
@@ -87,6 +96,12 @@ streamListener.on('tweet', function(tweet) {
     }
 });
 
+/************************
+ ****  Redis Client  ****
+ ************************/
+
+var client = Redis.createClient();
+
 client.on('connect', function() {
     console.log("Successfully connected to redis server!");
 });
@@ -108,5 +123,6 @@ client.on('message', function(channel, message) {
             break;
     }
 });
+
 client.subscribe('twailer.subscribe');
 client.subscribe('twailer.unsubscribe');
