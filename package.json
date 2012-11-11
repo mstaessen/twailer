@@ -32,6 +32,7 @@
       "nodemailer": ">= 0.3.31",
       "mailparser": ">= 0.2.31",
       "redis": ">= 0.8.2",
+      "hiredis": "= 0.1.14",
       "twit": ">= 1.0.7",
       "validator": ">= 0.4.13"
     }
