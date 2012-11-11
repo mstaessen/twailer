@@ -1,5 +1,4 @@
-#!/usr/local/bin/node
-
+#!/usr/bin/env node
 var Redis      = require('redis')
   , MailParser = require('mailparser').MailParser;
 

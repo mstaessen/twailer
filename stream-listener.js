@@ -12,6 +12,7 @@ var StreamListener = function(subscriptions) {
     this.subscriptions = subscriptions || {};
     this.stream = null;
     this.nbChannels = 0;
+    this.timer = null;
 }
 
 Util.inherits(StreamListener, Events.EventEmitter);
@@ -64,10 +65,18 @@ StreamListener.prototype.unsubscribe = function(email, channel) {
     
 StreamListener.prototype.resetStream = function() {
     if(this.hasSubscriptions()) {
-        this.stream = twitter.stream('statuses/filter', {track: Object.keys(this.subscriptions)});
+        // Reset timer
+        if(this.timer) {
+            clearTimeout(this.timer);
+        }
         
         // capture this in self to prevent a scoping problem with the anonymous function
         var self = this;
+        this.stream = twitter.stream('statuses/filter', {track: Object.keys(this.subscriptions)});
+        setTimeout(function() {
+            self.resetStream();
+        }, 1000 * 3600);
+
         this.stream.on('tweet', function(tweet) {
             self.onTweet(tweet);
         });
@@ -94,6 +103,7 @@ StreamListener.prototype.onSubscribe = function(email, channel) {
     if(!this.stream || Object.keys(this.subscriptions).length != this.nbChannels) {
         this.resetStream();
         this.nbChannels = Object.keys(this.subscriptions).length;
+
     }
 };
     

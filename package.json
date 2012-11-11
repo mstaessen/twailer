@@ -1,12 +1,38 @@
 {
   "name": "twailer",
-  "version": "0.0.1",
-  "private": true,
+  "description": "Get an email whenever a tweet with a certain hashtag or mention is published.",
+  "version": "0.1.0",
+  "keywords": [
+    "twitter", "email"
+  ],
+  "author": {
+    "name": "Michiel Staessen",
+    "email": "staessenmichiel@gmail.com"
+  },
+  "homepage": "http://mstaessen.github.com/twailer",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mstaessen/twailer.git"
+  },
+  "readmeFilename": "README.md",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://github.com/mstaessen/twailer/blob/master/LICENSE"
+    }
+  ],
+  "engine": {
+    "node": ">=0.6"
+  },
+  "main": "./twailer.js",
+  "bin": {
+    "twailer": "./bin/twailer"
+  },
   "dependencies": {
-      "nodemailer": "0.x",
-      "mailparser": "0.x",
-      "twit": "1.x",
-      "express": "3.x",
-      "validator": "0.x"
+      "nodemailer": ">= 0.3.31",
+      "mailparser": ">= 0.2.31",
+      "redis": ">= 0.8.2",
+      "twit": ">= 1.0.7",
+      "validator": ">= 0.4.13"
     }
 }
