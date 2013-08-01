@@ -1,39 +1,34 @@
 {
   "name": "twailer",
+  "version": "1.0.0",
   "description": "Get an email whenever a tweet with a certain hashtag or mention is published.",
-  "version": "0.1.0",
-  "keywords": [
-    "twitter", "email"
-  ],
-  "author": {
-    "name": "Michiel Staessen",
-    "email": "staessenmichiel@gmail.com"
+  "main": "bin/twailerd",
+  "dependencies": {
+    "optimist": "~0.6.0",
+    "package": "~1.0.1",
+    "validator": "~1.4.0",
+    "twit": "~1.1.8"
   },
-  "homepage": "http://mstaessen.github.com/twailer",
+  "devDependencies": {
+    "mocha": "~1.12.0",
+    "should": "~1.2.2"
+  },
+  "scripts": {
+    "start": "bin/twailerd",
+    "test": "mocha"
+  },
   "repository": {
     "type": "git",
     "url": "git://github.com/mstaessen/twailer.git"
   },
-  "readmeFilename": "README.md",
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "http://github.com/mstaessen/twailer/blob/master/LICENSE"
-    }
+  "keywords": [
+    "twitter",
+    "hashtag",
+    "notification"
   ],
-  "engine": {
-    "node": ">=0.6"
-  },
-  "main": "./twailer.js",
-  "bin": {
-    "twailer": "./bin/twailer"
-  },
-  "dependencies": {
-      "nodemailer": ">= 0.3.31",
-      "mailparser": ">= 0.2.31",
-      "redis": ">= 0.8.2",
-      "hiredis": "= 0.1.14",
-      "twit": ">= 1.0.7",
-      "validator": ">= 0.4.13"
-    }
+  "author": "Michiel Staessen <staessenmichiel@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mstaessen/twailer/issues"
+  }
 }

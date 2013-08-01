@@ -1,78 +1,61 @@
-# Twailer
+# Twailer v1.0.0 [![Build Status](https://secure.travis-ci.org/mstaessen/twailer.png)](http://travis-ci.org/mstaessen/twailer)
 
-Get an email whenever a tweet with a certain hashtag or mention is published.
+Twailer is a little robot that monitors certain channels on Social Media. It can send you _realtime_ notifications
+whenever somebody tweets with a certain hashtag/mention.
 
-## Workflow
+## What's new in version 1?
 
-### Subscribe 
+After 9 months of prototype evaluation, it is time for a complete rewrite. The previous version (v0) was a bugged, quick
+and dirty prototype. The next version (v1) focusses on stability and modularity which will allow users to track more
+social media.
 
-If you want to get email updates for some hashtag or mention, simply send an email to 
-subscribe@domain.tld with the hashtag (including #) or mention (including @) in the subject
-field. If the subscription was successful, you will receive a confirmation email.
+### Pluggable Architecture
 
-### Unsubscribe
+Basically, Twailer handles three types of tasks:
+- Social media monitoring (SourceMonitor)
+- Subscription management (SubscriptionStore)
+- Sending notifications (NotificationHandler)
 
-If you no longer want to receive email updates, you can unsubscribe in a similar fasion:
-send an email to unsubscribe@domain.tld. Supplying the hashtag or mention in the subject
-field is optional. If you do not supply any, all your subscriptions will be removed.
+Each of these tasks is replaceable with a custom implementation in order to suit your needs.
 
-## Requirements
+<pre>
+                                          +-----------------------+
+                                          |                       |
+                                          |     SourceMonitor     |
+                                          |                       |
+                                          +-----------------------+
+                                                    ^   |
+                                  channels to track |   | posts
+                                                    |   v
++-----------------------+                 +-----------------------+                +----------------------+
+|                       |  (un)subscribe  |                       |  notification  |                      |
+|     TwailerClient     |     request     |        Twailer        |    commands    |  NotificationSender  |
+|                       | --------------> |                       | -------------> |                      |
++-----------------------+                 +-----------------------+                +----------------------+
+                                                    ^   |
+                                       subscription |   | subscription
+                                                    |   v
+                                          +-----------------------+
+                                          |                       |
+                                          |   SubscriptionStore   |
+                                          |                       |
+                                          +-----------------------+
+</pre>
 
-* A mailserver (I am using postfix)
-* A Redis server
-* NodeJS
-* Twitter API credentials (to be filled in in config.js)
+### Work In Progress
 
-## Installation
+- [x] Use Unix sockets instead of Redis Pub/Sub
+- [ ] `SourceMonitor`s
+    - [x] `TwitterMonitor`
+    - [ ] ...
+- [ ] `SubscriptionStore`s
+    - [x] InMemorySubscriptionStore
+    - [ ] MongoSubscriptionStore
+    - [ ] ...
+- [ ] `NotificationSender`s
+    - [ ] `EmailSender`
+    - [ ] ...
 
-This installation guide is intended for Ubuntu and postfix. If you are using another 
-MTA, you will have to figure out how to install this yourself. Installation is not that 
-difficult ;)
+## Issues
 
-First, lets make sure all the requirements are satisfied.
-
-    apt-get install postfix redis-server nodejs
-
-Now, let's install the source files
-
-    mkdir -p /path/to/target/location && cd /path/to/target/location
-    npm install twailer
-
-Next, we need to configure postfix. First, we need a new transport method. In `master.conf`, add
-
-    twailer   unix  -       n       n       -       -       pipe
-      flags=FR user=twailer argv=/path/to/twailer/bin/twailer
-      
-Because your node installation may be different from mine, you might need to change the shebang. 
-You could use `/usr/bin/env node` but then you will need to configure postfix to pass the `$PATH`
-variable.
-
-We want emails sent to `(un)?subscribe@domain.tld` delivered on this machine, so we need to add a 
-mailbox domain in `main.cf`
-
-    virtual_mailbox_domains = domain.tld [other domains]
-    
-We don't want to receive these mails in an inbox, we want them delivered to our new transport. In
-`main.cf`, configure the location for the transport map.
-   
-    transport_maps = hash:/etc/postfix/transport
-    
-In `/etc/postfix/transport`, add the following lines:
-
-    subscribe@domain.tld    twailer:
-    unsubscribe@domain.tld  twailer:
-    
-Finally, we need to reload postfix. Don't forget to convert the transport map to Berkeley DB with `postmap`.
-
-    postmap /etc/postfix/transport
-    postfix reload
-
-You're all set! You can now process incoming subscription mails.
-
-To use the application, start the twailer process.
-
-    node twailer.js 
-
-## Questions, Pull Requests
-
-Open an issue
+Create a new ticket on GitHub.

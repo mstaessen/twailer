@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 var path = require('path'),
-    TwailerClient = require('../lib/TwailerClient'),
+    Twailer = require('../lib/Twailer'),
     package = require('package')(__dirname + '/..'),
     optimist = require('optimist')
         .usage('Usage: $0 [-c|--config config]')
@@ -17,11 +17,6 @@ var path = require('path'),
             alias: 'config',
             default: '/etc/twailer/twailer.config.js',
             describe: 'The configuration file to load'
-        })
-        .options('p', {
-            alias: 'parser',
-            describe: 'Which parser to use',
-            default: 'email'
         }),
     argv = optimist.argv;
 
@@ -35,9 +30,9 @@ if (argv.version) {
     process.exit(0);
 }
 
-var twailer = new TwailerClient(require(path.resolve(argv.config)));
-twailer.subscribe('staessenmichiel@gmail.com', ['all', 'my', 'channels']);
+var twailer = new Twailer(require(path.resolve(argv.config)));
+process.on('SIGINT', function () {
+    twailer.close();
+});
 
-//process.stdin.resume();
-//process.stdin.setEncoding('ascii');
-//process.stdin.pipe(mp);
+
